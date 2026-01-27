@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { MOCK_EXPLORE_PROFILES, Match } from '../types';
+import ProfileSheet from './ProfileSheet';
+import FilterSheet from './FilterSheet';
 
 interface ExploreStackProps {
     onMatch: (profile: Match) => void;
@@ -9,6 +11,8 @@ const ExploreStack: React.FC<ExploreStackProps> = ({ onMatch }) => {
     const [profiles, setProfiles] = useState<Match[]>(MOCK_EXPLORE_PROFILES);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [lastDirection, setLastDirection] = useState<'left' | 'right' | null>(null);
+    const [showFilters, setShowFilters] = useState(false);
+    const [showProfileDetails, setShowProfileDetails] = useState(false);
 
     const currentProfile = profiles[currentIndex];
     const nextProfile = profiles[currentIndex + 1];
@@ -53,7 +57,10 @@ const ExploreStack: React.FC<ExploreStackProps> = ({ onMatch }) => {
                 <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     Nook <span className="text-primary text-4xl leading-none">.</span>
                 </h1>
-                <button className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-white/10">
+                <button 
+                    onClick={() => setShowFilters(true)}
+                    className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-white/10"
+                >
                     <span className="material-symbols-outlined">tune</span>
                 </button>
             </header>
@@ -116,7 +123,10 @@ const ExploreStack: React.FC<ExploreStackProps> = ({ onMatch }) => {
                             <span className="material-symbols-outlined text-3xl">close</span>
                         </button>
 
-                        <button className="size-10 rounded-full bg-black/40 backdrop-blur-md border border-white/30 text-white flex items-center justify-center hover:bg-white/10 transition-all active:scale-90">
+                        <button 
+                            onClick={() => setShowProfileDetails(true)}
+                            className="size-10 rounded-full bg-black/40 backdrop-blur-md border border-white/30 text-white flex items-center justify-center hover:bg-white/10 transition-all active:scale-90"
+                        >
                             <span className="material-symbols-outlined text-xl">info</span>
                         </button>
 
@@ -129,6 +139,18 @@ const ExploreStack: React.FC<ExploreStackProps> = ({ onMatch }) => {
                     </div>
                 </div>
             </div>
+
+            {/* Sheets */}
+            {showFilters && (
+                <FilterSheet onClose={() => setShowFilters(false)} />
+            )}
+
+            {showProfileDetails && currentProfile && (
+                <ProfileSheet 
+                    match={currentProfile} 
+                    onClose={() => setShowProfileDetails(false)} 
+                />
+            )}
         </div>
     );
 };

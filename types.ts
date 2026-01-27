@@ -38,6 +38,7 @@ export interface Match {
     bio: string;
     interests: string[];
     isOnline: boolean;
+    photos?: string[];
 }
 
 export interface UserProfile {
@@ -100,7 +101,11 @@ export const MOCK_MATCHES: Match[] = [
         location: "Indiranagar, Bangalore",
         bio: "Coffee snob by day, indie music lover by night. Always looking for the next best gig in the city.",
         interests: ["Indie Folk", "Sci-Fi Books", "Filter Coffee", "Cubbon Park"],
-        isOnline: true
+        isOnline: true,
+        photos: [
+            "https://images.unsplash.com/photo-1485230946086-1d99d543166d?q=80&w=3300&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=3270&auto=format&fit=crop"
+        ]
     },
     {
         id: '2',
@@ -111,7 +116,10 @@ export const MOCK_MATCHES: Match[] = [
         location: "Koramangala, Bangalore",
         bio: "Weekend hiker and craft beer enthusiast. Let's find the best dosa in town.",
         interests: ["Hiking", "Craft Beer", "Tech", "Dosa"],
-        isOnline: false
+        isOnline: false,
+        photos: [
+             "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=3000&auto=format&fit=crop"
+        ]
     },
      {
         id: '3',
@@ -134,9 +142,13 @@ export const MOCK_EXPLORE_PROFILES: Match[] = [
         avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=3276&auto=format&fit=crop",
         job: "Architect",
         location: "Jayanagar, Bangalore",
-        bio: "Designing spaces and dreaming of places. Let's explore the city together.",
+        bio: "Designing spaces and dreaming of places. I love exploring heritage structures in the city, sketching in Cubbon Park on Sunday mornings, and hunting for the perfect masala dosa. Looking for someone who appreciates art and good conversation.",
         interests: ["Architecture", "Art", "Museums", "Sketching"],
-        isOnline: true
+        isOnline: true,
+        photos: [
+            "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=2459&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=3271&auto=format&fit=crop"
+        ]
     },
     {
         id: '5',
@@ -145,9 +157,12 @@ export const MOCK_EXPLORE_PROFILES: Match[] = [
         avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=3000&auto=format&fit=crop",
         job: "Chef",
         location: "MG Road, Bangalore",
-        bio: "I express myself through food. Looking for someone to taste test my experiments.",
+        bio: "I express myself through food. Running a small bistro and always experimenting with new flavors. Looking for a taste-tester and adventure buddy.",
         interests: ["Cooking", "Food History", "Jazz", "Cycling"],
-        isOnline: false
+        isOnline: false,
+        photos: [
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=3387&auto=format&fit=crop"
+        ]
     },
     {
         id: '6',
@@ -156,9 +171,12 @@ export const MOCK_EXPLORE_PROFILES: Match[] = [
         avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=3387&auto=format&fit=crop",
         job: "Yoga Instructor",
         location: "Indiranagar, Bangalore",
-        bio: "Finding balance in chaos. Love morning runs and sunset meditation.",
+        bio: "Finding balance in chaos. I teach Vinyasa yoga and love starting my days with a sunrise run. Big believer in mindfulness and good coffee.",
         interests: ["Yoga", "Running", "Meditation", "Healthy Eating"],
-        isOnline: true
+        isOnline: true,
+        photos: [
+             "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=3387&auto=format&fit=crop"
+        ]
     }
 ];
 
