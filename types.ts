@@ -19,6 +19,7 @@ export interface Message {
     text: string;
     sender: 'user' | 'partner';
     timestamp: Date;
+    reaction?: string;
 }
 
 export interface GuidanceResponse {
@@ -176,6 +177,48 @@ export const MOCK_EXPLORE_PROFILES: Match[] = [
         isOnline: true,
         photos: [
              "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=3387&auto=format&fit=crop"
+        ]
+    },
+    {
+        id: '7',
+        name: 'Rohan',
+        age: 28,
+        avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=3000&auto=format&fit=crop",
+        job: "Musician",
+        location: "Koramangala, Bangalore",
+        bio: "Guitarist by night, coder by day. I love jamming sessions, vinyl records, and finding the best late-night eats in the city. Let's make some noise (or just listen to some).",
+        interests: ["Guitar", "Vinyl", "Rock", "Late Night Eats"],
+        isOnline: false,
+        photos: [
+            "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=3000&auto=format&fit=crop"
+        ]
+    },
+    {
+        id: '8',
+        name: 'Kavya',
+        age: 25,
+        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=3000&auto=format&fit=crop",
+        job: "Writer",
+        location: "Malleswaram, Bangalore",
+        bio: "Lost in books and old Bangalore charm. I spend my weekends exploring bookstores and writing poetry in quiet corners. Seeking a fellow dreamer.",
+        interests: ["Poetry", "Literature", "History", "Tea"],
+        isOnline: true,
+        photos: [
+             "https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?q=80&w=3000&auto=format&fit=crop"
+        ]
+    },
+    {
+        id: '9',
+        name: 'Aditya',
+        age: 29,
+        avatar: "https://images.unsplash.com/photo-1480455624313-e29b44bbfde1?q=80&w=3000&auto=format&fit=crop",
+        job: "Photographer",
+        location: "JP Nagar, Bangalore",
+        bio: "Chasing sunsets and wildlife. I'm happiest when I'm outdoors with my camera. Looking for someone to share quiet moments in nature with.",
+        interests: ["Photography", "Wildlife", "Trekking", "Nature"],
+        isOnline: true,
+        photos: [
+             "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?q=80&w=3000&auto=format&fit=crop"
         ]
     }
 ];

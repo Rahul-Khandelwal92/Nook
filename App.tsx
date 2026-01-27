@@ -7,10 +7,16 @@ import MatchesList from './components/MatchesList';
 import BottomNav, { Tab } from './components/BottomNav';
 import MyProfile from './components/MyProfile';
 import ExploreStack from './components/ExploreStack';
+import SplashScreen from './components/SplashScreen';
+import MobileHomeScreen from './components/MobileHomeScreen';
 
 type Screen = 'main' | 'lane_setup' | 'chat';
+type SystemState = 'home' | 'app';
 
 const App: React.FC = () => {
+  const [systemState, setSystemState] = useState<SystemState>('home');
+  const [showSplash, setShowSplash] = useState(true);
+  
   const [screen, setScreen] = useState<Screen>('main');
   const [activeTab, setActiveTab] = useState<Tab>('explore');
   
@@ -22,6 +28,16 @@ const App: React.FC = () => {
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
 
   // -- Navigation Handlers --
+
+  const launchApp = () => {
+      setSystemState('app');
+      setShowSplash(true); 
+      setScreen('main');
+  };
+
+  const goHome = () => {
+      setSystemState('home');
+  };
 
   const handleMatchSelect = (match: Match) => {
     setSelectedMatch(match);
@@ -43,11 +59,6 @@ const App: React.FC = () => {
       setSelectedMatch(null);
       setCurrentLane(null);
       setScreen('main');
-      // If we were in lane setup from Explore, user might expect to go back to explore, 
-      // but 'Matches' is also a safe fallback. 
-      // Let's stick to 'matches' tab if we were chatting, 
-      // or 'explore' if we just matched? 
-      // For simplicity, just going back to main view.
   };
 
   const handleBackToLane = () => {
@@ -55,72 +66,125 @@ const App: React.FC = () => {
   };
 
   const handleExploreMatch = (profile: Match) => {
-      // Add to matches list if not already there
       if (!matches.find(m => m.id === profile.id)) {
           setMatches(prev => [profile, ...prev]);
       }
-      // Optional: Trigger a "It's a Match" popup? 
-      // For now, just silently add and maybe switch tab or show notification.
-      // Let's auto-switch to matches tab to show progress?
-      // Or just stay on explore. Staying on explore is better UX typically.
+  };
+
+  // -- Android Navigation Logic --
+
+  const handleAndroidBack = () => {
+      if (systemState === 'home') return; // Do nothing on home screen
+
+      if (screen === 'chat') {
+          handleBackToLane();
+      } else if (screen === 'lane_setup') {
+          handleBackToMatches();
+      } else if (screen === 'main') {
+          // If on main screen, close app (go home)
+          goHome();
+      }
   };
 
   return (
-    <div className="h-full w-full bg-black flex justify-center items-center">
+    <div className="h-full w-full bg-[#000000] flex justify-center items-center font-sans">
         {/* Mobile Container Simulation */}
-        <div className="h-full w-full max-w-md bg-background-light dark:bg-background-dark overflow-hidden relative shadow-2xl flex flex-col">
+        <div className="h-full w-full max-w-md bg-background-light dark:bg-background-dark overflow-hidden relative shadow-2xl flex flex-col sm:rounded-[30px] sm:border-[8px] sm:border-black sm:h-[95vh]">
             
-            {/* Main Tabbed View */}
-            {screen === 'main' && (
-                <>
-                    <main className="flex-1 overflow-hidden relative">
-                        {activeTab === 'explore' && (
-                            <ExploreStack onMatch={handleExploreMatch} />
+            {/* Viewport Area - Where App/Home resides */}
+            <div className="flex-1 relative w-full overflow-hidden">
+                {systemState === 'home' ? (
+                    <MobileHomeScreen onLaunchApp={launchApp} />
+                ) : (
+                    <>
+                        {showSplash ? (
+                            <SplashScreen onFinish={() => setShowSplash(false)} />
+                        ) : (
+                            <div className="h-full w-full flex flex-col relative animate-fade-in">
+                                {/* Main Tabbed View */}
+                                {screen === 'main' && (
+                                    <>
+                                        <main className="flex-1 overflow-hidden relative">
+                                            {activeTab === 'explore' && (
+                                                <ExploreStack onMatch={handleExploreMatch} />
+                                            )}
+                                            {activeTab === 'matches' && (
+                                                <MatchesList onSelectMatch={handleMatchSelect} />
+                                            )}
+                                            {activeTab === 'profile' && (
+                                                <MyProfile />
+                                            )}
+                                        </main>
+                                        <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+                                    </>
+                                )}
+
+                                {/* Full Screen Overlays */}
+
+                                {screen === 'lane_setup' && selectedMatch && (
+                                    <div className="absolute inset-0 z-40 bg-background-dark animate-fade-in">
+                                        <LaneSelection 
+                                            match={selectedMatch}
+                                            onSelect={handleLaneSelect} 
+                                            onSkip={handleSkip} 
+                                            onBack={handleBackToMatches}
+                                        />
+                                    </div>
+                                )}
+
+                                {screen === 'chat' && currentLane && selectedMatch && (
+                                    <div className="absolute inset-0 z-40 bg-background-dark animate-fade-in">
+                                        <ChatScreen 
+                                            laneId={currentLane} 
+                                            match={selectedMatch}
+                                            onChangeLane={() => setIsSwitching(true)} 
+                                            onBack={handleBackToLane}
+                                            initialMessage={initialMessage}
+                                        />
+                                    </div>
+                                )}
+
+                                {/* Sheets */}
+                                {isSwitching && currentLane && (
+                                    <LaneSwitchSheet 
+                                        currentLane={currentLane}
+                                        onClose={() => setIsSwitching(false)}
+                                        onSwitch={(lane) => setCurrentLane(lane)}
+                                    />
+                                )}
+                            </div>
                         )}
-                        {activeTab === 'matches' && (
-                            <MatchesList onSelectMatch={handleMatchSelect} />
-                        )}
-                        {activeTab === 'profile' && (
-                            <MyProfile />
-                        )}
-                    </main>
-                    <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
-                </>
-            )}
+                    </>
+                )}
+            </div>
 
-            {/* Full Screen Overlays */}
+            {/* Android Navigation Bar - Persistent */}
+            <div className="h-12 bg-black w-full shrink-0 flex items-center justify-around z-[100] border-t border-white/5">
+                 <button 
+                    onClick={handleAndroidBack}
+                    className="flex items-center justify-center size-12 active:opacity-50"
+                 >
+                     {/* Back Icon (Triangle) */}
+                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                         <path d="M15 19L7 12L15 5" stroke="#E2E8F0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                     </svg>
+                 </button>
 
-            {screen === 'lane_setup' && selectedMatch && (
-                <div className="absolute inset-0 z-50 bg-background-dark">
-                    <LaneSelection 
-                        match={selectedMatch}
-                        onSelect={handleLaneSelect} 
-                        onSkip={handleSkip} 
-                        onBack={handleBackToMatches}
-                    />
-                </div>
-            )}
+                 <button 
+                    onClick={goHome}
+                    className="flex items-center justify-center size-12 active:opacity-50"
+                 >
+                     {/* Home Icon (Circle) */}
+                     <div className="size-4 rounded-full border-2 border-slate-200"></div>
+                 </button>
 
-            {screen === 'chat' && currentLane && selectedMatch && (
-                <div className="absolute inset-0 z-50 bg-background-dark">
-                    <ChatScreen 
-                        laneId={currentLane} 
-                        match={selectedMatch}
-                        onChangeLane={() => setIsSwitching(true)} 
-                        onBack={handleBackToLane}
-                        initialMessage={initialMessage}
-                    />
-                </div>
-            )}
-
-            {/* Sheets */}
-            {isSwitching && currentLane && (
-                <LaneSwitchSheet 
-                    currentLane={currentLane}
-                    onClose={() => setIsSwitching(false)}
-                    onSwitch={(lane) => setCurrentLane(lane)}
-                />
-            )}
+                 <button 
+                    className="flex items-center justify-center size-12 active:opacity-50"
+                 >
+                     {/* Overview Icon (Square) */}
+                     <div className="size-4 rounded-[2px] border-2 border-slate-200"></div>
+                 </button>
+            </div>
 
         </div>
     </div>

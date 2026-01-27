@@ -21,11 +21,18 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ laneId, match, onChangeLane, on
     const [showInterestsSheet, setShowInterestsSheet] = useState(false);
     const [showProfile, setShowProfile] = useState(false);
     
+    // Reaction State
+    const [hoveredMessageId, setHoveredMessageId] = useState<string | null>(null);
+    const [reactingToMessageId, setReactingToMessageId] = useState<string | null>(null);
+    const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    
     // Timers
     const inactivityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const currentLane = LANES[laneId];
+
+    const REACTION_OPTIONS = ['❤️', '😂', '😮', '😢', '🔥', '👍'];
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -132,6 +139,45 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ laneId, match, onChangeLane, on
         setShowInterestsSheet(false);
     };
 
+    // Reaction Handlers
+    const startLongPress = (id: string) => {
+        longPressTimerRef.current = setTimeout(() => {
+            setReactingToMessageId(id);
+        }, 500); 
+    };
+
+    const cancelLongPress = () => {
+        if (longPressTimerRef.current) {
+            clearTimeout(longPressTimerRef.current);
+            longPressTimerRef.current = null;
+        }
+    };
+
+    const handleReaction = (msgId: string, emoji: string) => {
+        setMessages(prev => prev.map(m => {
+            if (m.id === msgId) {
+                // Toggle if same, else set new
+                const newReaction = m.reaction === emoji ? undefined : emoji;
+                return { ...m, reaction: newReaction };
+            }
+            return m;
+        }));
+        setReactingToMessageId(null);
+        setHoveredMessageId(null);
+    };
+
+    // Close picker when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (reactingToMessageId && !(e.target as Element).closest('.reaction-picker-container')) {
+                setReactingToMessageId(null);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [reactingToMessageId]);
+
+
     return (
         <div className="flex flex-col h-full w-full max-w-md mx-auto bg-background-light dark:bg-background-dark relative">
              {/* Header */}
@@ -198,25 +244,79 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ laneId, match, onChangeLane, on
                 </div>
 
                 {messages.map((msg) => (
-                    <div key={msg.id} className={`flex items-end gap-2 max-w-[85%] ${msg.sender === 'user' ? 'ml-auto justify-end' : ''}`}>
+                    <div 
+                        key={msg.id} 
+                        className={`flex items-end gap-2 max-w-[85%] relative group ${msg.sender === 'user' ? 'ml-auto justify-end' : ''}`}
+                        onMouseEnter={() => setHoveredMessageId(msg.id)}
+                        onMouseLeave={() => setHoveredMessageId(null)}
+                    >
                         {msg.sender === 'partner' && (
                              <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 shrink-0 mb-1 cursor-pointer" 
                                 onClick={() => setShowProfile(true)}
                                 style={{ backgroundImage: `url('${match.avatar}')` }}></div>
                         )}
                         
-                        <div className={`flex flex-col gap-1 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
+                        <div className={`flex flex-col gap-1 relative ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
                             <p className="text-white/40 text-[11px] font-normal px-2">
                                 {msg.sender === 'user' ? 'Me' : match.name}
                             </p>
-                            <div className={`text-[15px] font-normal leading-relaxed rounded-2xl px-4 py-3 shadow-sm ${
-                                msg.sender === 'user' 
-                                ? 'bg-primary text-background-dark rounded-br-none' 
-                                : 'bg-[#1e2f23] text-slate-100 rounded-bl-none'
-                            }`}>
-                                {msg.text}
+                            
+                            <div className="relative reaction-picker-container">
+                                {/* Message Bubble */}
+                                <div 
+                                    className={`text-[15px] font-normal leading-relaxed rounded-2xl px-4 py-3 shadow-sm select-none transition-transform active:scale-[0.98] cursor-pointer ${
+                                        msg.sender === 'user' 
+                                        ? 'bg-primary text-background-dark rounded-br-none' 
+                                        : 'bg-[#1e2f23] text-slate-100 rounded-bl-none'
+                                    }`}
+                                    onMouseDown={() => startLongPress(msg.id)}
+                                    onMouseUp={cancelLongPress}
+                                    onMouseLeave={cancelLongPress}
+                                    onTouchStart={() => startLongPress(msg.id)}
+                                    onTouchEnd={cancelLongPress}
+                                >
+                                    {msg.text}
+                                </div>
+
+                                {/* Reaction Picker Overlay */}
+                                {reactingToMessageId === msg.id && (
+                                    <div className={`absolute bottom-full mb-2 ${msg.sender === 'user' ? 'right-0' : 'left-0'} z-50 flex items-center gap-1 bg-surface-dark border border-white/10 rounded-full p-1.5 shadow-xl animate-slide-up`}>
+                                        {REACTION_OPTIONS.map(emoji => (
+                                            <button
+                                                key={emoji}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleReaction(msg.id, emoji);
+                                                }}
+                                                className={`size-8 flex items-center justify-center text-lg rounded-full hover:bg-white/10 hover:scale-110 transition-all ${msg.reaction === emoji ? 'bg-primary/20 border border-primary/50' : ''}`}
+                                            >
+                                                {emoji}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Reaction Display */}
+                                {msg.reaction && (
+                                    <div 
+                                        onClick={() => handleReaction(msg.id, msg.reaction!)}
+                                        className={`absolute -bottom-3 ${msg.sender === 'user' ? 'right-2' : 'left-2'} z-10 bg-surface-dark border border-white/10 rounded-full px-1.5 py-0.5 text-xs shadow-md cursor-pointer hover:scale-110 transition-transform`}
+                                    >
+                                        {msg.reaction}
+                                    </div>
+                                )}
                             </div>
                         </div>
+
+                        {/* Hover Trigger Button (Desktop) - Only show if not picking and no reaction (or even if reaction exists to change it) */}
+                        {hoveredMessageId === msg.id && !reactingToMessageId && (
+                            <button 
+                                onClick={() => setReactingToMessageId(msg.id)}
+                                className={`opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-8 ${msg.sender === 'user' ? '-left-8' : '-right-8'} size-6 flex items-center justify-center rounded-full bg-black/20 text-white/50 hover:bg-black/40 hover:text-white hover:scale-110`}
+                            >
+                                <span className="material-symbols-outlined text-[16px]">add_reaction</span>
+                            </button>
+                        )}
                     </div>
                 ))}
 
@@ -257,7 +357,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ laneId, match, onChangeLane, on
             </main>
 
             {/* Footer */}
-            <footer className="fixed bottom-0 left-0 right-0 max-w-md mx-auto z-30">
+            <footer className="absolute bottom-0 left-0 right-0 w-full z-30">
                 {/* Guidance Chips - PERSISTENT: Not hidden when reassurance is shown */}
                 {guidance.type !== 'none' && guidance.chips && guidance.chips.length > 0 && (
                      <div className="px-4 pb-3 flex gap-2 overflow-x-auto no-scrollbar animate-slide-up">
@@ -275,7 +375,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ laneId, match, onChangeLane, on
                 )}
 
                 {/* Input Bar */}
-                <div className="bg-background-dark/95 backdrop-blur-md p-4 pt-2 pb-8 border-t border-white/5">
+                <div className="bg-background-dark/95 backdrop-blur-md p-4 pt-2 pb-4 border-t border-white/5">
                     <div className="flex items-center gap-2 bg-[#1e2f23] rounded-full px-4 py-1.5 border border-white/5 focus-within:border-primary/50 transition-colors">
                         <button className="text-white/40 hover:text-primary transition-colors">
                             <span className="material-symbols-outlined">add_circle</span>

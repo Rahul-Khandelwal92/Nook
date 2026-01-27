@@ -9,7 +9,7 @@ interface BottomNavProps {
 
 const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) => {
     return (
-        <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-t border-slate-200 dark:border-white/5 pb-safe pt-2 z-50 px-6">
+        <nav className="absolute bottom-0 left-0 right-0 w-full bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-t border-slate-200 dark:border-white/5 pb-2 pt-2 z-50 px-6">
             <div className="flex justify-between items-center h-16">
                 <button 
                     onClick={() => onTabChange('explore')}
