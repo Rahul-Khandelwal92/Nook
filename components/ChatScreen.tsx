@@ -73,15 +73,23 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ laneId, match, onChangeLane, on
                  // or just use generic. Let's try dynamic.
                  generateGuidance(laneId, messages, false).then(g => {
                      setGuidance(prev => {
-                         // If guidance is reassurance, preserve existing chips from previous guidance
-                         // so they persist while the user is drafting.
-                         if (g.type === 'reassurance') {
-                             return {
-                                 ...g,
-                                 chips: (prev.chips && prev.chips.length > 0) ? prev.chips : g.chips
-                             };
+                         // PRESERVE CHIPS:
+                         // We want chips to persist until message is sent. 
+                         // So we always prioritize existing chips over the background update's chips (which might be empty/different).
+                         const chipsToKeep = (prev.chips && prev.chips.length > 0) ? prev.chips : g.chips;
+                         
+                         // If we have chips, ensure type is NOT 'none' so they render.
+                         // We switch type to 'reassurance' (or keep current) if it was going to be 'none'.
+                         let newType = g.type;
+                         if (chipsToKeep && chipsToKeep.length > 0 && newType === 'none') {
+                             newType = 'reassurance';
                          }
-                         return g;
+
+                         return {
+                             ...g,
+                             type: newType,
+                             chips: chipsToKeep
+                         };
                      });
                  });
              }, 8000);
@@ -362,6 +370,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ laneId, match, onChangeLane, on
                     </div>
                 ))}
 
+                {/* Typing Indicator */}
                 {isPartnerTyping && (
                      <div className="flex items-end gap-2 max-w-[85%] animate-fade-in">
                         <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 shrink-0 mb-1" 

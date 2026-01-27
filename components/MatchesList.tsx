@@ -19,12 +19,16 @@ const MatchesList: React.FC<MatchesListProps> = ({ onSelectMatch }) => {
             </header>
 
             <main className="flex-1 p-4">
-                <div className="space-y-4">
+                <div className="space-y-2">
                     {MOCK_MATCHES.map((match) => (
                         <div 
                             key={match.id}
                             onClick={() => onSelectMatch(match)}
-                            className="flex items-center gap-4 p-3 rounded-2xl bg-white dark:bg-surface-dark border border-slate-100 dark:border-white/5 shadow-sm active:scale-[0.98] transition-all cursor-pointer animate-fade-in"
+                            className={`flex items-center gap-4 p-3 rounded-2xl border transition-all cursor-pointer animate-fade-in active:scale-[0.98]
+                                ${match.unread 
+                                    ? 'bg-primary/5 border-primary/20 shadow-md' 
+                                    : 'bg-white dark:bg-surface-dark border-slate-100 dark:border-white/5 shadow-sm'
+                                }`}
                         >
                             <div className="relative shrink-0">
                                 <div 
@@ -37,32 +41,46 @@ const MatchesList: React.FC<MatchesListProps> = ({ onSelectMatch }) => {
                             </div>
                             
                             <div className="flex-1 min-w-0">
-                                <div className="flex justify-between items-baseline mb-0.5">
-                                    <h3 className="text-lg font-bold text-slate-900 dark:text-white truncate">
-                                        {match.name}, {match.age}
+                                <div className="flex justify-between items-baseline mb-1">
+                                    <h3 className={`text-lg text-slate-900 dark:text-white truncate ${match.unread ? 'font-black' : 'font-bold'}`}>
+                                        {match.name}
                                     </h3>
-                                    {match.isOnline && <span className="text-[10px] text-primary font-medium tracking-wide">ONLINE</span>}
+                                    <span className={`text-[11px] font-medium tracking-wide ${match.unread ? 'text-primary' : 'text-slate-400 dark:text-white/30'}`}>
+                                        {match.lastActive || 'Recently'}
+                                    </span>
                                 </div>
-                                <p className="text-sm text-slate-500 dark:text-slate-400 truncate pr-2">
-                                    {match.job} • {match.location}
-                                </p>
-                                <div className="flex gap-1.5 mt-2 overflow-hidden">
-                                    {match.interests.slice(0, 2).map((interest, i) => (
-                                        <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/5 whitespace-nowrap">
-                                            {interest}
-                                        </span>
-                                    ))}
-                                    {match.interests.length > 2 && (
-                                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/5 whitespace-nowrap">
-                                            +{match.interests.length - 2}
-                                        </span>
-                                    )}
-                                </div>
+                                
+                                {match.lastMessage ? (
+                                    <div className="flex items-center gap-2">
+                                        <p className={`text-sm truncate pr-2 ${match.unread ? 'text-slate-900 dark:text-white font-semibold' : 'text-slate-500 dark:text-slate-400'}`}>
+                                            {match.lastMessage}
+                                        </p>
+                                        {match.unread && (
+                                            <div className="size-2.5 rounded-full bg-primary shrink-0"></div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    /* New Match State (No messages yet) */
+                                    <div className="flex flex-col gap-1">
+                                         <p className="text-sm text-slate-500 dark:text-slate-400 truncate pr-2 italic">
+                                            Start the conversation...
+                                        </p>
+                                        <div className="flex gap-1.5 overflow-hidden">
+                                            {match.interests.slice(0, 2).map((interest, i) => (
+                                                <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/5 whitespace-nowrap">
+                                                    {interest}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                             
-                            <div className="shrink-0 text-slate-300 dark:text-white/20">
-                                <span className="material-symbols-outlined">chevron_right</span>
-                            </div>
+                            {!match.lastMessage && (
+                                <div className="shrink-0 text-slate-300 dark:text-white/20">
+                                    <span className="material-symbols-outlined">chevron_right</span>
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>

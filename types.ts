@@ -42,6 +42,9 @@ export interface Match {
     photos?: string[];
     gender: 'male' | 'female';
     distance: number; // in km
+    lastMessage?: string;
+    unread?: boolean;
+    lastActive?: string;
 }
 
 export interface UserProfile {
@@ -110,7 +113,10 @@ export const MOCK_MATCHES: Match[] = [
             "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=3270&auto=format&fit=crop"
         ],
         gender: 'female',
-        distance: 3
+        distance: 3,
+        lastMessage: "That new cafe sounds perfect! ☕️",
+        unread: true,
+        lastActive: "2m ago"
     },
     {
         id: '2',
@@ -126,7 +132,10 @@ export const MOCK_MATCHES: Match[] = [
              "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=3000&auto=format&fit=crop"
         ],
         gender: 'male',
-        distance: 5
+        distance: 5,
+        lastMessage: "I'll let you know when I'm free.",
+        unread: false,
+        lastActive: "1h ago"
     },
      {
         id: '3',
@@ -139,7 +148,10 @@ export const MOCK_MATCHES: Match[] = [
         interests: ["Photography", "Travel", "Foodie", "Instagram"],
         isOnline: true,
         gender: 'female',
-        distance: 12
+        distance: 12,
+        lastMessage: "Haha, no way! 😂",
+        unread: false,
+        lastActive: "5m ago"
     }
 ];
 
