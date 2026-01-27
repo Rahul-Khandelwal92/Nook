@@ -21,8 +21,10 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ laneId, match, onChangeLane, on
     const [showInterestsSheet, setShowInterestsSheet] = useState(false);
     const [showProfile, setShowProfile] = useState(false);
     
+    // Notification State
+    const [notification, setNotification] = useState<{show: boolean, text: string} | null>(null);
+
     // Reaction State
-    const [hoveredMessageId, setHoveredMessageId] = useState<string | null>(null);
     const [reactingToMessageId, setReactingToMessageId] = useState<string | null>(null);
     const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     
@@ -64,20 +66,23 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ laneId, match, onChangeLane, on
         // If it's user's turn (last message was partner's) and they haven't typed for 8s
         const lastMsg = messages[messages.length - 1];
         if (messages.length > 0 && lastMsg?.sender === 'partner') {
+             // Reset timer on input change (via dependency) or message update
              inactivityTimerRef.current = setTimeout(() => {
                  setShowReassurance(true);
                  // Fetch reassurance specific guidance if we want dynamic text, 
                  // or just use generic. Let's try dynamic.
                  generateGuidance(laneId, messages, false).then(g => {
-                     if (g.type === 'reassurance') {
-                         setGuidance(g);
-                     } else {
-                         // Fallback generic reassurance if model returns something else
-                         setGuidance({
-                             type: 'reassurance',
-                             reassuranceText: "It’s okay to pause and think. There's no rush."
-                         });
-                     }
+                     setGuidance(prev => {
+                         // If guidance is reassurance, preserve existing chips from previous guidance
+                         // so they persist while the user is drafting.
+                         if (g.type === 'reassurance') {
+                             return {
+                                 ...g,
+                                 chips: (prev.chips && prev.chips.length > 0) ? prev.chips : g.chips
+                             };
+                         }
+                         return g;
+                     });
                  });
              }, 8000);
         } else {
@@ -87,7 +92,17 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ laneId, match, onChangeLane, on
         return () => {
             if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
         };
-    }, [messages, laneId]);
+    }, [messages, laneId, inputValue]);
+
+    // Clear notification after delay
+    useEffect(() => {
+        if (notification?.show) {
+            const timer = setTimeout(() => {
+                setNotification(prev => prev ? { ...prev, show: false } : null);
+            }, 3000); // Show for 3 seconds
+            return () => clearTimeout(timer);
+        }
+    }, [notification?.show]);
 
 
     const handleSendMessage = async (text: string) => {
@@ -120,6 +135,9 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ laneId, match, onChangeLane, on
             
             setMessages(prev => [...prev, partnerMsg]);
             setIsPartnerTyping(false);
+
+            // Trigger simulated push notification
+            setNotification({ show: true, text: replyText });
 
             // 3. Generate New Guidance for User
             const newGuidance = await generateGuidance(laneId, [...messages, userMsg, partnerMsg]);
@@ -163,7 +181,6 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ laneId, match, onChangeLane, on
             return m;
         }));
         setReactingToMessageId(null);
-        setHoveredMessageId(null);
     };
 
     // Close picker when clicking outside
@@ -180,6 +197,25 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ laneId, match, onChangeLane, on
 
     return (
         <div className="flex flex-col h-full w-full max-w-md mx-auto bg-background-light dark:bg-background-dark relative">
+             {/* Push Notification Simulation */}
+             <div 
+                className={`absolute top-4 left-4 right-4 z-50 transition-all duration-500 ease-in-out transform ${notification?.show ? 'translate-y-0 opacity-100' : '-translate-y-24 opacity-0'}`}
+            >
+                <div className="bg-surface-dark/95 backdrop-blur-xl border border-white/10 rounded-2xl p-3 shadow-2xl flex items-center gap-3">
+                    <div 
+                        className="size-10 rounded-full bg-cover bg-center shrink-0"
+                        style={{ backgroundImage: `url('${match.avatar}')` }}
+                    ></div>
+                    <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-baseline">
+                            <h4 className="text-white text-sm font-bold truncate">{match.name}</h4>
+                            <span className="text-white/40 text-[10px]">now</span>
+                        </div>
+                        <p className="text-white/80 text-xs truncate">{notification?.text}</p>
+                    </div>
+                </div>
+            </div>
+
              {/* Header */}
              <header className="sticky top-0 z-20 backdrop-blur-md bg-surface-dark/80 border-b border-primary/10 transition-colors">
                 <div className="flex items-center p-4 pb-3 justify-between">
@@ -247,8 +283,6 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ laneId, match, onChangeLane, on
                     <div 
                         key={msg.id} 
                         className={`flex items-end gap-2 max-w-[85%] relative group ${msg.sender === 'user' ? 'ml-auto justify-end' : ''}`}
-                        onMouseEnter={() => setHoveredMessageId(msg.id)}
-                        onMouseLeave={() => setHoveredMessageId(null)}
                     >
                         {msg.sender === 'partner' && (
                              <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 shrink-0 mb-1 cursor-pointer" 
@@ -261,13 +295,13 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ laneId, match, onChangeLane, on
                                 {msg.sender === 'user' ? 'Me' : match.name}
                             </p>
                             
-                            <div className="relative reaction-picker-container">
+                            <div className="relative reaction-picker-container group/bubble">
                                 {/* Message Bubble */}
                                 <div 
-                                    className={`text-[15px] font-normal leading-relaxed rounded-2xl px-4 py-3 shadow-sm select-none transition-transform active:scale-[0.98] cursor-pointer ${
+                                    className={`text-[15px] font-normal leading-relaxed rounded-2xl pl-4 pr-9 py-3 shadow-sm select-none transition-transform active:scale-[0.98] cursor-pointer animate-scale-in ${
                                         msg.sender === 'user' 
-                                        ? 'bg-primary text-background-dark rounded-br-none' 
-                                        : 'bg-[#1e2f23] text-slate-100 rounded-bl-none'
+                                        ? 'bg-primary text-background-dark rounded-br-none origin-bottom-right' 
+                                        : 'bg-[#1e2f23] text-slate-100 rounded-bl-none origin-bottom-left'
                                     }`}
                                     onMouseDown={() => startLongPress(msg.id)}
                                     onMouseUp={cancelLongPress}
@@ -277,6 +311,24 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ laneId, match, onChangeLane, on
                                 >
                                     {msg.text}
                                 </div>
+
+                                {/* Emoji Trigger Button - Bottom Right */}
+                                <button 
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setReactingToMessageId(reactingToMessageId === msg.id ? null : msg.id);
+                                    }}
+                                    className={`absolute bottom-1 right-1 size-6 flex items-center justify-center rounded-full transition-all 
+                                        opacity-0 group-hover/bubble:opacity-100 focus:opacity-100
+                                        ${reactingToMessageId === msg.id ? 'opacity-100' : ''}
+                                        ${msg.sender === 'user' 
+                                            ? 'text-black/40 hover:text-black hover:bg-white/20' 
+                                            : 'text-white/40 hover:text-white hover:bg-black/20'
+                                        }
+                                    `}
+                                >
+                                    <span className="material-symbols-outlined text-[16px]">add_reaction</span>
+                                </button>
 
                                 {/* Reaction Picker Overlay */}
                                 {reactingToMessageId === msg.id && (
@@ -307,16 +359,6 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ laneId, match, onChangeLane, on
                                 )}
                             </div>
                         </div>
-
-                        {/* Hover Trigger Button (Desktop) - Only show if not picking and no reaction (or even if reaction exists to change it) */}
-                        {hoveredMessageId === msg.id && !reactingToMessageId && (
-                            <button 
-                                onClick={() => setReactingToMessageId(msg.id)}
-                                className={`opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-8 ${msg.sender === 'user' ? '-left-8' : '-right-8'} size-6 flex items-center justify-center rounded-full bg-black/20 text-white/50 hover:bg-black/40 hover:text-white hover:scale-110`}
-                            >
-                                <span className="material-symbols-outlined text-[16px]">add_reaction</span>
-                            </button>
-                        )}
                     </div>
                 ))}
 

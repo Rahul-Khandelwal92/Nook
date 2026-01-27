@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
 
-interface FilterSheetProps {
-    onClose: () => void;
+export interface FilterState {
+    interestedIn: string; // 'Men', 'Women', 'Everyone'
+    distance: number;
+    ageRange: [number, number];
 }
 
-const FilterSheet: React.FC<FilterSheetProps> = ({ onClose }) => {
-    const [interestedIn, setInterestedIn] = useState('Women');
-    const [distance, setDistance] = useState(15);
-    const [ageRange, setAgeRange] = useState([22, 28]);
+interface FilterSheetProps {
+    onClose: () => void;
+    currentFilters: FilterState;
+    onApply: (filters: FilterState) => void;
+}
+
+const FilterSheet: React.FC<FilterSheetProps> = ({ onClose, currentFilters, onApply }) => {
+    const [interestedIn, setInterestedIn] = useState(currentFilters.interestedIn);
+    const [distance, setDistance] = useState(currentFilters.distance);
+    const [ageRange, setAgeRange] = useState<[number, number]>(currentFilters.ageRange);
 
     // Constants for Age Range
     const MIN_AGE = 18;
@@ -20,6 +28,15 @@ const FilterSheet: React.FC<FilterSheetProps> = ({ onClose }) => {
         if (index === 0 && newRange[0] >= newRange[1]) newRange[0] = newRange[1] - 1;
         if (index === 1 && newRange[1] <= newRange[0]) newRange[1] = newRange[0] + 1;
         setAgeRange(newRange as [number, number]);
+    };
+
+    const handleApply = () => {
+        onApply({
+            interestedIn,
+            distance,
+            ageRange
+        });
+        onClose();
     };
 
     // Calculate percentages for the age slider visuals
@@ -40,7 +57,7 @@ const FilterSheet: React.FC<FilterSheetProps> = ({ onClose }) => {
                 {/* Header */}
                 <div className="px-6 pt-2 pb-4 flex items-center justify-between shrink-0">
                     <h2 className="text-xl font-bold text-[#112116] dark:text-white">Filters</h2>
-                    <button onClick={onClose} className="text-sm text-primary font-medium">Done</button>
+                    <button onClick={handleApply} className="text-sm text-primary font-medium">Done</button>
                 </div>
 
                 {/* Scrollable Content */}
@@ -125,7 +142,7 @@ const FilterSheet: React.FC<FilterSheetProps> = ({ onClose }) => {
                 {/* Footer with Apply Button - Fixed to bottom of sheet */}
                 <div className="p-6 pt-2 shrink-0 border-t border-slate-100 dark:border-white/5 mt-auto">
                     <button 
-                        onClick={onClose} 
+                        onClick={handleApply} 
                         className="w-full py-4 rounded-full bg-primary text-background-dark font-bold text-lg shadow-lg shadow-primary/20 active:scale-[0.98] transition-transform hover:brightness-110"
                     >
                         Apply Filters

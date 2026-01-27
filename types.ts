@@ -40,6 +40,8 @@ export interface Match {
     interests: string[];
     isOnline: boolean;
     photos?: string[];
+    gender: 'male' | 'female';
+    distance: number; // in km
 }
 
 export interface UserProfile {
@@ -106,7 +108,9 @@ export const MOCK_MATCHES: Match[] = [
         photos: [
             "https://images.unsplash.com/photo-1485230946086-1d99d543166d?q=80&w=3300&auto=format&fit=crop",
             "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=3270&auto=format&fit=crop"
-        ]
+        ],
+        gender: 'female',
+        distance: 3
     },
     {
         id: '2',
@@ -120,7 +124,9 @@ export const MOCK_MATCHES: Match[] = [
         isOnline: false,
         photos: [
              "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=3000&auto=format&fit=crop"
-        ]
+        ],
+        gender: 'male',
+        distance: 5
     },
      {
         id: '3',
@@ -131,7 +137,9 @@ export const MOCK_MATCHES: Match[] = [
         location: "Whitefield, Bangalore",
         bio: "Always capturing moments. Love travel and spicy food.",
         interests: ["Photography", "Travel", "Foodie", "Instagram"],
-        isOnline: true
+        isOnline: true,
+        gender: 'female',
+        distance: 12
     }
 ];
 
@@ -143,13 +151,15 @@ export const MOCK_EXPLORE_PROFILES: Match[] = [
         avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=3276&auto=format&fit=crop",
         job: "Architect",
         location: "Jayanagar, Bangalore",
-        bio: "Designing spaces and dreaming of places. I love exploring heritage structures in the city, sketching in Cubbon Park on Sunday mornings, and hunting for the perfect masala dosa. Looking for someone who appreciates art and good conversation.",
+        bio: "Designing spaces and dreaming of places. I love exploring heritage structures in the city, sketching in Cubbon Park on Sunday mornings, and hunting for the perfect masala dosa.",
         interests: ["Architecture", "Art", "Museums", "Sketching"],
         isOnline: true,
         photos: [
             "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=2459&auto=format&fit=crop",
             "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=3271&auto=format&fit=crop"
-        ]
+        ],
+        gender: 'female',
+        distance: 4
     },
     {
         id: '5',
@@ -163,7 +173,9 @@ export const MOCK_EXPLORE_PROFILES: Match[] = [
         isOnline: false,
         photos: [
             "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=3387&auto=format&fit=crop"
-        ]
+        ],
+        gender: 'male',
+        distance: 7
     },
     {
         id: '6',
@@ -177,7 +189,9 @@ export const MOCK_EXPLORE_PROFILES: Match[] = [
         isOnline: true,
         photos: [
              "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=3387&auto=format&fit=crop"
-        ]
+        ],
+        gender: 'female',
+        distance: 2
     },
     {
         id: '7',
@@ -186,12 +200,14 @@ export const MOCK_EXPLORE_PROFILES: Match[] = [
         avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=3000&auto=format&fit=crop",
         job: "Musician",
         location: "Koramangala, Bangalore",
-        bio: "Guitarist by night, coder by day. I love jamming sessions, vinyl records, and finding the best late-night eats in the city. Let's make some noise (or just listen to some).",
+        bio: "Guitarist by night, coder by day. I love jamming sessions, vinyl records, and finding the best late-night eats in the city. Let's make some noise.",
         interests: ["Guitar", "Vinyl", "Rock", "Late Night Eats"],
         isOnline: false,
         photos: [
             "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=3000&auto=format&fit=crop"
-        ]
+        ],
+        gender: 'male',
+        distance: 6
     },
     {
         id: '8',
@@ -205,7 +221,9 @@ export const MOCK_EXPLORE_PROFILES: Match[] = [
         isOnline: true,
         photos: [
              "https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?q=80&w=3000&auto=format&fit=crop"
-        ]
+        ],
+        gender: 'female',
+        distance: 9
     },
     {
         id: '9',
@@ -219,7 +237,93 @@ export const MOCK_EXPLORE_PROFILES: Match[] = [
         isOnline: true,
         photos: [
              "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?q=80&w=3000&auto=format&fit=crop"
-        ]
+        ],
+        gender: 'male',
+        distance: 14
+    },
+    {
+        id: '10',
+        name: 'Zain',
+        age: 26,
+        avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=3000&auto=format&fit=crop",
+        job: "Digital Artist",
+        location: "Indiranagar, Bangalore",
+        bio: "Creating worlds on my tablet. I love animation, comic conventions, and finding the perfect ramen spot. Let's draw something together.",
+        interests: ["Digital Art", "Anime", "Ramen", "Comics"],
+        isOnline: false,
+        photos: [],
+        gender: 'male',
+        distance: 3
+    },
+    {
+        id: '11',
+        name: 'Meera',
+        age: 24,
+        avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=3000&auto=format&fit=crop",
+        job: "Startup Founder",
+        location: "HSR Layout, Bangalore",
+        bio: "Building the next big thing. Coffee addict, pitch deck pro, and weekend marathon runner. Looking for someone who can keep up with my pace.",
+        interests: ["Startups", "Running", "Coffee", "Tech"],
+        isOnline: true,
+        photos: [],
+        gender: 'female',
+        distance: 8
+    },
+    {
+        id: '12',
+        name: 'Kabir',
+        age: 30,
+        avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=3000&auto=format&fit=crop",
+        job: "Fitness Trainer",
+        location: "Koramangala, Bangalore",
+        bio: "Health is wealth. I help people achieve their goals. Love calisthenics, protein shakes, and early morning meditation. Good vibes only.",
+        interests: ["Fitness", "Calisthenics", "Meditation", "Nutrition"],
+        isOnline: true,
+        photos: [],
+        gender: 'male',
+        distance: 5
+    },
+    {
+        id: '13',
+        name: 'Zara',
+        age: 27,
+        avatar: "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?q=80&w=3000&auto=format&fit=crop",
+        job: "Pediatrician",
+        location: "Whitefield, Bangalore",
+        bio: "Healing little hearts. I love my job, but I also love my downtime. Board games, classical music, and long walks are my jam.",
+        interests: ["Medicine", "Board Games", "Classical Music", "Walking"],
+        isOnline: false,
+        photos: [],
+        gender: 'female',
+        distance: 15
+    },
+    {
+        id: '14',
+        name: 'Dev',
+        age: 25,
+        avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=3000&auto=format&fit=crop",
+        job: "Game Developer",
+        location: "Bellandur, Bangalore",
+        bio: "Living in virtual reality. Hardcore gamer, code wizard, and sci-fi movie buff. Player 2 wanted for co-op campaigns.",
+        interests: ["Gaming", "Coding", "Sci-Fi", "VR"],
+        isOnline: true,
+        photos: [],
+        gender: 'male',
+        distance: 10
+    },
+    {
+        id: '15',
+        name: 'Ishaan',
+        age: 28,
+        avatar: "https://images.unsplash.com/photo-1489980557514-251d61e3eeb6?q=80&w=3000&auto=format&fit=crop",
+        job: "Travel Blogger",
+        location: "Nomad (Bangalore Base)",
+        bio: "Home is where the backpack is. I've been to 20 countries and counting. Love street food, hostels, and meeting new people. Join my next adventure?",
+        interests: ["Travel", "Backpacking", "Street Food", "Vlogging"],
+        isOnline: false,
+        photos: [],
+        gender: 'male',
+        distance: 1
     }
 ];
 
