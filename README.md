@@ -1,9 +1,8 @@
 # Nook - Dating App for Introverts
 
 ## Links
-*
+
 * **Live Demo:** https://ais-dev-kp6m5ngp5mc2xcqpg2kax7-752778455529.asia-southeast1.run.app
-*
 * **Demo Video:** https://www.loom.com/share/1598ca0e423948a3b761d31643336f7c
 
 ## Context
