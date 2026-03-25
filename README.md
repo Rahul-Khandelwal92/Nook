@@ -30,15 +30,15 @@ When a match is made, users can select a conversational "Lane" (such as *Light &
 
 | Decision | What I chose | What I gave up | Why |
 |----------|-------------|----------------|-----|
-| **AI as co-pilot, not autopilot** | Suggestions the user picks from | Fully automated responses | Authenticity matters — users need to feel the conversation is theirs, not the AI's |
+| **AI as co-pilot, not autopilot** | Suggestions the user picks from | Fully automated responses | Authenticity matters: users need to feel the conversation is theirs, not the AI's |
 | **Guided Chat Lanes over open chat** | Structured conversation modes | Total freedom of expression | Introverts need scaffolding; open-ended chat is exactly what causes anxiety and ghosting |
 | **Gemini API over OpenAI** | Google Gemini | GPT-4 / Claude | Better free tier for prototyping; context-awareness for conversational suggestions was comparable |
 | **Mobile-first dark UI** | Intimate, focused single-column layout | Richer desktop experience | Dating is a mobile behaviour; dark mode reduces cognitive pressure and feels safer |
-| **Lane selection before chat** | Users pick tone upfront | Spontaneous conversation | Setting expectations early reduces ambiguity — both users know the vibe before typing |
+| **Lane selection before chat** | Users pick tone upfront | Spontaneous conversation | Setting expectations early reduces ambiguity; both users know the vibe before typing |
 
 ## What I Learned
 
-- Introverts don't need fewer features — they need **less ambiguity**. The biggest UX win was removing the blank canvas, not adding more buttons.
+- Introverts don't need fewer features. They need **less ambiguity**. The biggest UX win was removing the blank canvas, not adding more buttons.
 - AI works best in social apps when it's **invisible infrastructure**, not a visible chatbot. The Lane system hides the AI behind a product metaphor.
 - Shipping a live, deployed app (not just a repo) made this 10x more credible as a PM portfolio piece.
 
