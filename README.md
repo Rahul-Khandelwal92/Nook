@@ -20,7 +20,8 @@ When a match is made, users can select a conversational "Lane" (such as *Light &
 
 | Splash | Explore | Profile |
 |--------|---------|---------|
-| <img src="screenshots/Splash.png" width="200"/> | <img src="screenshots/Explore.png" width="200"/> | <img src="screenshots/Profile.png" width="200"/> |
+| <img src="screenshots/Splash.png" width="200"/>
+ | <img src="screenshots/Explore.png" width="200"/> | <img src="screenshots/Profile.png" width="200"/> |
 
 | Chat Lanes | Active Chat | Conversation |
 |------------|-------------|--------------|
