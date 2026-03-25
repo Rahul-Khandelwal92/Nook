@@ -24,11 +24,11 @@ When a match is made, users can select a conversational "Lane" (such as *Light &
 
 | Splash | Explore | Profile |
 |--------|---------|---------|
-| <img src="screenshots/screenshot-3-splash.png" width="200"/> | <img src="screenshots/screenshot-2-explore.png" width="200"/> | <img src="screenshots/screenshot-4-profile.png" width="200"/> |
+| <img src="screenshots/Splash.png" width="200"/> | <img src="screenshots/Explore.png" width="200"/> | <img src="screenshots/Profile.png" width="200"/> |
 
 | Chat Lanes | Active Chat | Conversation |
 |------------|-------------|--------------|
-| <img src="screenshots/screenshot-1-chat-lanes.png" width="200"/> | <img src="screenshots/screenshot-5-chat-active.png" width="200"/> | <img src="screenshots/screenshot-6-chat-convo.png" width="200"/> |
+| <img src="screenshots/Chat Window.png" width="200"/> | <img src="screenshots/Guided Pills.png" width="200"/> | <img src="screenshots/Conversations.png" width="200"/> |
 
 ## Tech Stack
 *   **Frontend:** React 19, Tailwind CSS, Vite
