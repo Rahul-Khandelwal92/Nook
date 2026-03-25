@@ -24,11 +24,11 @@ When a match is made, users can select a conversational "Lane" (such as *Light &
 
 | Splash | Explore | Profile |
 |--------|---------|---------|
-| ![Splash](screenshots/screenshot-3-splash.png) | ![Explore](screenshots/screenshot-2-explore.png) | ![Profile](screenshots/screenshot-4-profile.png) |
+| <img src="https://raw.githubusercontent.com/Rahul-Khandelwal92/Nook/main/screenshots/screenshot-3-splash.png" width="200"/> | <img src="https://raw.githubusercontent.com/Rahul-Khandelwal92/Nook/main/screenshots/screenshot-2-explore.png" width="200"/> | <img src="https://raw.githubusercontent.com/Rahul-Khandelwal92/Nook/main/screenshots/screenshot-4-profile.png" width="200"/> |
 
 | Chat Lanes | Active Chat | Conversation |
 |------------|-------------|--------------|
-| ![Chat Lanes](screenshots/screenshot-1-chat-lanes.png) | ![Active Chat](screenshots/screenshot-5-chat-active.png) | ![Conversation](screenshots/screenshot-6-chat-convo.png) |
+| <img src="https://raw.githubusercontent.com/Rahul-Khandelwal92/Nook/main/screenshots/screenshot-1-chat-lanes.png" width="200"/> | <img src="https://raw.githubusercontent.com/Rahul-Khandelwal92/Nook/main/screenshots/screenshot-5-chat-active.png" width="200"/> | <img src="https://raw.githubusercontent.com/Rahul-Khandelwal92/Nook/main/screenshots/screenshot-6-chat-convo.png" width="200"/> |
 
 ## Tech Stack
 *   **Frontend:** React 19, Tailwind CSS, Vite
