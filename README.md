@@ -2,6 +2,7 @@
 
 ## Links
 * **Live Demo:** https://ais-dev-kp6m5ngp5mc2xcqpg2kax7-752778455529.asia-southeast1.run.app
+* **Demo Video:** https://www.loom.com/share/1598ca0e423948a3b761d31643336f7c
 
 ## Context
 In the fast-paced landscape of modern dating and social networking apps, the emphasis is often placed on rapid swiping and immediate, witty banter. While this works for some, it leaves a significant demographic underserved: introverts and individuals who experience social anxiety. For these users, the pressure of initiating and sustaining an engaging conversation with a stranger can be a massive barrier to forming meaningful connections.
