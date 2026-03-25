@@ -1,7 +1,9 @@
 # Nook - Dating App for Introverts
 
 ## Links
+*
 * **Live Demo:** https://ais-dev-kp6m5ngp5mc2xcqpg2kax7-752778455529.asia-southeast1.run.app
+*
 * **Demo Video:** https://www.loom.com/share/1598ca0e423948a3b761d31643336f7c
 
 ## Context
@@ -11,8 +13,9 @@ In the fast-paced landscape of modern dating and social networking apps, the emp
 The "blank canvas" of a new chat window is intimidating. Users frequently struggle with breaking the ice, reading the room, or knowing how to transition a conversation from small talk to deeper topics. Existing social apps provide the match but offer no scaffolding for the actual interaction, leading to abandoned chats, ghosting, and user burnout.
 
 ## Solution
-Nook is an AI-powered social application designed to lower the barrier to entry for digital communication. Instead of throwing users into an unstructured chat, Nook introduces the concept of **"Guided Chat Lanes."**
+Nook is an AI-powered social application designed to lower the barrier to entry for digital communication. Instead of throwing users into an unstructured chat, Nook introduces the concept of 
 
+**"Guided Chat Lanes and AI Prompts."**
 When a match is made, users can select a conversational "Lane" (such as *Light & Easy* or *Deep Dive*). Powered by the Gemini AI API, the app acts as a supportive co-pilot, providing contextual, non-intrusive conversation starters and real-time guidance tailored to the chosen lane's vibe. By offering a structured, low-pressure environment, Nook empowers introverted users to navigate the early stages of a conversation authentically and confidently, transforming anxiety into genuine connection.
 
 ## Key Features
