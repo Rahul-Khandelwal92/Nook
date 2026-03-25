@@ -1,4 +1,4 @@
-# Nook - Guided Chat Lanes
+# Nook - Dating App for Introverts
 
 ## Links
 * **Live Demo:** https://ais-dev-kp6m5ngp5mc2xcqpg2kax7-752778455529.asia-southeast1.run.app
